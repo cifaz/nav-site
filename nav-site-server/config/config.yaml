@@ -1,0 +1,56 @@
+server:
+  name: nav-site-server
+  port: 8083
+store:
+  drive: file
+  # 存储文件的类型
+  type: json
+  # 存储文件的目录
+  path: data/json/webs.json
+  # 备份文件的目录，暂不支持
+  backupsDir: data/backups
+  # 最大保留备最近份文件数量，暂不支持
+  backupsMax: 30
+GroupStore:
+  drive: file
+  # 存储文件的类型
+  type: json
+  # 存储文件的目录
+  path: data/json/groups.json
+  # 备份文件的目录，暂不支持
+  backupsDir: data/backups
+  # 最大保留备最近份文件数量，暂不支持
+  backupsMax: 30
+# 静态文件根目录
+static:
+#  static: /data/nav-site-server/
+  # 默认为当前目录, 如果为空为当前目录, 可填写其它绝对路径
+  root: ""
+#  root: D:/tmp
+  # 上传相关信息
+  upload:
+    # 请注意程序加自动加data开头, 不用重复加
+    path: image/
+    maxsize: 2097152
+    baseUrl: http://localhost:8083/
+account:
+  cookieExpireSeconds: 7200
+  secert: nav-site-web
+  admin: admin
+  members:
+    - name: admin
+      rule: add,edit,delete
+      password: 123456
+    - name: save
+      rule: add,edit
+      password: 123456
+    - name: add
+      rule: add
+      password: 123456
+    - name: edit
+      rule: edit
+      password: 123456
+    - name: delete
+      rule: delete
+      password: 123456
+

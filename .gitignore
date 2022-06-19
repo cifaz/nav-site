@@ -1,0 +1,8 @@
+.idea
+
+dist/
+dist.zip
+node_modules/
+release/
+**/dist/
+test

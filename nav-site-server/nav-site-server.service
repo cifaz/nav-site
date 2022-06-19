@@ -1,0 +1,12 @@
+[Unit]
+Description=Nav Site Api Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/nav-site/
+ExecStart=/opt/nav-site/nav-site-server
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
