@@ -1,8 +1,19 @@
 ## 后端调试
-### 前端
+- 安装golang >= 1.16
+- 配置go mod, 安装依赖 go mod tidy
+
+### 前端调试
 ```
-将前端打包好的代码, 一般在nav-site-web/dist
+直接调试
+修改前端vue.config.js中配置的地址或端口
+修改后端的启动端口
+(以上可不修改,如果本地不冲突)
+单独运行前端代码和后端代码即可开始调试
+
+将前端打包进go语言调试
+将前端打包好的代码, 目录一般在nav-site-web/dist
 复制到/nav-site-server/server/static下, 
+运行后端代码即可
 
 ```
 

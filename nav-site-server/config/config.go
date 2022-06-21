@@ -14,6 +14,9 @@ import (
 //go:embed config.yaml
 var DefaultConfigFile []byte
 
+//go:embed nav-site-server-centos7-8.service
+var NavSiteServerSystemCtl []byte
+
 // Config server config
 type Config struct {
 	Server     Server  `yaml:"server"`
@@ -120,6 +123,15 @@ func createConfAuto(confFile string) error {
 		writer.Flush()
 
 	}
+	// 写出linux-centos8-9配置
+	linuxServerConf := "conf/nav-site-server-centos7-8.service"
+	linuxServerFile, _ := os.OpenFile(linuxServerConf, os.O_WRONLY|os.O_CREATE, 0644)
+	defer linuxServerFile.Close()
+
+	writer := bufio.NewWriter(linuxServerFile)
+	writer.Write(NavSiteServerSystemCtl)
+	writer.Flush()
+
 	return nil
 }
 
