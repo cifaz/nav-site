@@ -106,17 +106,19 @@ func createConfAuto(confFile string) error {
 
 	if !confExists {
 		os.MkdirAll("conf", os.ModePerm)
-		file, err := os.OpenFile(confFile, os.O_APPEND|os.O_CREATE, 0666)
+		file, err := os.OpenFile(confFile, os.O_WRONLY|os.O_CREATE, 0644)
+		defer file.Close()
 
 		if err != nil {
 			fmt.Println("create conf err")
 			return err
 		}
 
+		//file.WriteAt(DefaultConfigFile, 0)
 		writer := bufio.NewWriter(file)
 		writer.Write(DefaultConfigFile)
 		writer.Flush()
-		defer file.Close()
+
 	}
 	return nil
 }
