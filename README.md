@@ -24,7 +24,7 @@
 go version 
 版本应该在1.16及以上
 ```
-- 下载最新程序, 地址: 
+- 下载最新程序, 地址: [https://github.com/cifaz/nav-site/releases](https://github.com/cifaz/nav-site/releases)
 - 第一次运行时会自动创建默认配置目录和数据目录, 请根据需要修改
 - windows安装, 下载到你指定的目录解压后, 双击exe文件运行即可, 默认端口号:8083, 请使用http://ip:8083访问
 - linux安装, 下载到指定目录后, 

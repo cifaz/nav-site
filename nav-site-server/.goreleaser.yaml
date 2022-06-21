@@ -8,10 +8,11 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
+#    binary: nav-site/nav-site-server
     goos:
       - linux
-      - windows
       - darwin
+      - windows
     goarch:
       - amd64
       - arm64
@@ -19,14 +20,17 @@ builds:
       - -s -w -X main.build={{.Version}}
 archives:
   - replacements:
-      darwin: Darwin
+      darwin: macOS
       linux: Linux
       windows: Windows
       amd64: x86_64
+#    meta: true
+    wrap_in_directory: true
     format_overrides:
       - goos: windows
         format: zip
-#    name_template: "{{.ProjectName}}-v{{.Version}}"
+    # nav-site-server_0.0.2-next_Linux_arm64.tar
+#    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Runtime.Goos }}_{{ .Runtime.Goarch }}"
 checksum:
   name_template: 'checksums.txt'
 snapshot:
