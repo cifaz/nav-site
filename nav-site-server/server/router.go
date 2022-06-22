@@ -12,9 +12,9 @@ func Router(gin *gin.Engine) {
 }
 
 func website(gin *gin.Engine) {
-	//gin.GET("/", api.WebSiteList)
 	website := gin.Group("/api/website")
 	{
+		website.GET("/info", api.WetSiteInfo)
 		website.GET("/list", api.WebSiteList)
 		website.POST("/add", api.WebSiteAdd)
 		website.POST("/update", api.WebSiteUpdate)

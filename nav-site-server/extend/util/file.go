@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
+	"strings"
 	"sync"
 	"time"
 )
@@ -179,4 +182,36 @@ func FileExists(path string) (bool, error) {
 	}
 
 	return false, err
+}
+
+func IsRelease() bool {
+	arg1 := strings.ToLower(os.Args[0])
+	return strings.Index(arg1, "go_build") < 0 && strings.Index(arg1, "go-build") < 0
+}
+
+func CurrentFile() string {
+	_, file, _, ok := runtime.Caller(2)
+	if !ok {
+		panic(errors.New("Can not get current file info"))
+	}
+	return file
+}
+
+func GetExecPath() (string, error) {
+	file, err := exec.LookPath(os.Args[0])
+	if err != nil {
+		return "", err
+	}
+	path, err := filepath.Abs(file)
+	if err != nil {
+		return "", err
+	}
+	i := strings.LastIndex(path, "/")
+	if i < 0 {
+		i = strings.LastIndex(path, "\\")
+	}
+	if i < 0 {
+		return "", errors.New(`error: Can't find "/" or "\".`)
+	}
+	return string(path[0 : i+1]), nil
 }

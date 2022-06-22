@@ -2,6 +2,7 @@ import axios from "@/util/request.js";
 
 const website = {
   add: "website/add",
+  info: "website/info",
   list: "website/list",
   delete: "website/delete",
   update: "website/update",
@@ -10,6 +11,14 @@ const website = {
   orderWebSite: "/website/order/list",
   orderGroup: "/website/order/group",
 };
+
+export function WebInfo(data) {
+  return axios({
+    method: "get",
+    data: data,
+    url: website.info,
+  });
+}
 
 export function WebList(data) {
   return axios({

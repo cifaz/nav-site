@@ -15,6 +15,8 @@
 复制到/nav-site-server/server/static下, 
 运行后端代码即可
 
+快速部署前端代码到golang工程里, 进入script目录, 运行脚本, 
+如windows: PS E:\2project\golang\goland\001\NavSite\nav-site-server\script> .\install-npm.bat
 ```
 
 ### 后台打包

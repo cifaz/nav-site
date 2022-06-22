@@ -9,16 +9,27 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 )
 
 func init() {
-	s, err := conf.InitConfig()
+	// 读取参数
+	var confDir string
+	for _, item := range os.Args {
+		itemArr := strings.Split(item, "=")
+		if itemArr[0] == "-conf-dir" || itemArr[0] == "conf-dir" {
+			confDir = itemArr[1]
+		}
+	}
+
+	s, err := conf.InitConfig(confDir)
 	if err != nil {
 		log.Println("init server config failed, error: ", err)
 		os.Exit(1)
 	}
 	conf.App = *s
+
 	log.Printf("init config:")
 	log.Printf("%+v", conf.App)
 }

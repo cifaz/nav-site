@@ -14,7 +14,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
 
-document.title = "海宝智造-工作组"
+document.title = process.env.VUE_APP_TITLE | "网址导航"
 
 app.config.globalProperties.$axios = axios;
 app.use(ElementPlus, { locale });

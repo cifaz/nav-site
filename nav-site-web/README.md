@@ -4,7 +4,7 @@
 ```
 调试模式
 npm install
-npm run build
+npm run dev
 默认端口为8080
 
 集成到go语言调试

@@ -1,6 +1,14 @@
 server:
   name: nav-site-server
   port: 8083
+# 站点配置
+site:
+  title: 迷你网址导航
+  # logo, 放放置于conf文件夹下, 并命名为login.png
+  # 标题点击的URL
+  url: https://baidu.com
+  # 格式: 可填写任意信息, 多行使用|分隔, 最后一个为版权信息, 格式为: 迷你网址导航 @ 2022-2022; 注:@后为固定值暂时不可变更
+  copyright: 九十九次的理论不如一次的行动来得实际 | 迷你网址导航
 store:
   drive: file
   # 存储文件的类型

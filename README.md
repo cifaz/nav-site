@@ -26,11 +26,12 @@ go version
 ```
 - 下载最新程序, 地址: [https://github.com/cifaz/nav-site/releases](https://github.com/cifaz/nav-site/releases)
 - 第一次运行时会自动创建默认配置目录和数据目录, 请根据需要修改
-- windows安装, 下载到你指定的目录解压后, 双击exe文件运行即可, 默认端口号:8083, 请使用http://ip:8083访问
+- windows安装, 下载到你指定的目录解压后, 双击exe文件运行即可, 默认端口号:8083, 请使用http://ip:8083访问, 如需指定配置目录,请使用命令行运行, 具体参见linux参数
 - linux安装, 下载到指定目录后, 
 ```
 修改程序运行权限 chmod u+x nav-site-server
 运行程序 ./nav-site-server
+指定配置目录运行 ./nav-site-server conf-dir=/opt/nav-site/
 后台运行(全路径演示) nohup /opt/nav-site/nav-site-server > /opt/nav-site/nav-site-server.out 2>&1 &
 ```
 - linux服务化 systemctl
@@ -50,9 +51,9 @@ netstat -ntlp | grep :8083
 ```
 - 程序配置介绍
 ```
-conf目录, 为配置文件, 程序会自动生成conf/config.yaml, 请根据具体需要变更, 暂时不能变更配置位置, 下个版本支持
+conf目录, 为配置文件, 程序会自动生成conf/config.yaml, 请根据具体需要变更
 conf目录, 如果网站需要不同的favicon, 请将文件放在此目录, 程序会自动加载, 更多的自定义配置, 敬请期待...
-data目录为数据目录, 1.是JSON数据, 是存储网站导航和分组信息, 2.是网站上传的图片信息, 暂时不能变更配置位置, 下个版本支持
+data目录为数据目录, 1.是JSON数据, 是存储网站导航和分组信息, 2.是网站上传的图片信息
 ```
 - 当前版本不支持自动备份数据，请自行备份，备份时请同时备份conf和data目录
 

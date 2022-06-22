@@ -2,7 +2,7 @@
   <div>
 
     <div class="box-tool">
-      <div class="site-name">海宝智造 - 工作组</div>
+
 
       <el-button size="small" type="info" v-if="canEdit" @click="groupOrder">
         分组排序
@@ -306,7 +306,7 @@ export default {
 
 .nav-body {
   max-width: 1100px;
-  margin: 2rem auto;
+  margin: 15px auto;
   position: relative;
 }
 
@@ -360,13 +360,5 @@ export default {
   /*margin-top: 2rem;*/
 }
 
-.site-name {
-  position: absolute;
-  left: 0;
-  display: inline-block;
-  font-size: 28px;
-  text-align: left;
-  font-weight: bolder;
-  color: #3a8ee6;
-}
+
 </style>

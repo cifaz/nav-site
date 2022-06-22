@@ -15,6 +15,21 @@ func WebSiteOrderUpdate(c *gin.Context) {
 
 }
 
+func WetSiteInfo(c *gin.Context) {
+	app := conf.App
+	output := conf.JsonOutput{}
+	site := app.Site
+	site.HasLogo = conf.HasLogo
+
+	output.Data = site
+	output.Debug = ""
+	output.Code = conf.Success
+	output.Message = conf.ErrorMsg[conf.Success]
+
+	response(c, output)
+	return
+}
+
 func WebSiteList(c *gin.Context) {
 	app := conf.App
 	output := conf.JsonOutput{}

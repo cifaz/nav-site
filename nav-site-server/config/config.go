@@ -8,6 +8,9 @@ import (
 	"gopkg.in/yaml.v2"
 	"nav-site-server/extend/util"
 	"os"
+	"path"
+	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -17,19 +20,38 @@ var DefaultConfigFile []byte
 //go:embed nav-site-server-centos7-8.service
 var NavSiteServerSystemCtl []byte
 
+var HasLogo bool = false
+
+type Program struct {
+	// 程序所在目录
+	ProgramDir string
+	// 配置及数据目录
+	ConfDir string
+}
+
 // Config server config
 type Config struct {
 	Server     Server  `yaml:"server"`
+	Site       Site    `yaml:"site"`
 	Store      Store   `yaml:"store"`
 	GroupStore Store   `yaml:"GroupStore"`
 	Static     Static  `yaml:"static"`
 	Account    Account `yaml:"account"`
+	Program    Program
 }
 
 // App application config
 type Server struct {
 	Name string `yaml:"name"`
 	Port string `yaml:"port"`
+}
+
+type Site struct {
+	Title     string `yaml:"title"`
+	Logo      string `yaml:"logo"`
+	HasLogo   bool
+	Url       string `yaml:"url"`
+	Copyright string `yaml:"copyright"`
 }
 
 // Store store config
@@ -79,28 +101,43 @@ const (
 	RuleDelete = "delete"
 )
 
-func InitConfig() (*Config, error) {
-	confFile := "conf/config.yaml"
+func InitConfig(confDir string) (*Config, error) {
+	release := util.IsRelease()
+	var programPath = ""
+	if !release {
+		fmt.Println("非正式环境运行中..." + strconv.FormatBool(!release))
+	} else {
+		path, _ := util.GetExecPath()
+		fmt.Println("程序所在目录:" + path)
+		programPath = path
+	}
 
-	createConfAuto(confFile)
-	config, err := util.ParseYaml(confFile)
+	var conf Config
+	conf.Program.ConfDir = confDir
+	conf.Program.ProgramDir = programPath
+	confDataDir := conf.GetConfDataDir()
+	fmt.Println("数据配置目录:" + confDataDir)
+
+	confFileFull := path.Join(confDataDir, "conf/config.yaml")
+
+	createConfAuto(confFileFull)
+	config, err := util.ParseYaml(confFileFull)
 	if err != nil {
 		errMsg := errors.New("parse config.yaml file error : " + err.Error())
 		return nil, errMsg
 	}
 
-	var c Config
-	if err := yaml.Unmarshal(config, &c); err != nil {
+	if err := yaml.Unmarshal(config, &conf); err != nil {
 		errMsg := errors.New("parse config []byte to struct error ：" + err.Error())
 		return nil, errMsg
 	}
 
-	c.initAccount()
+	conf.initAccount()
 
-	if err := c.initStoreDrive(); err != nil {
-		return &c, nil
+	if err := conf.initStoreDrive(); err != nil {
+		return &conf, nil
 	}
-	return &c, nil
+	return &conf, nil
 }
 
 // 自动创建配置文件
@@ -108,7 +145,8 @@ func createConfAuto(confFile string) error {
 	confExists, _ := util.FileExists(confFile)
 
 	if !confExists {
-		os.MkdirAll("conf", os.ModePerm)
+		baseDir := filepath.Dir(confFile)
+		os.MkdirAll(baseDir, os.ModePerm)
 		file, err := os.OpenFile(confFile, os.O_WRONLY|os.O_CREATE, 0644)
 		defer file.Close()
 
@@ -135,22 +173,36 @@ func createConfAuto(confFile string) error {
 	return nil
 }
 
+func (c *Config) GetConfDataDir() string {
+	var confDir string
+	if c.Program.ConfDir != "" {
+		confDir = c.Program.ConfDir
+	} else {
+		confDir = c.Program.ProgramDir
+	}
+	return confDir
+}
+
 // initStoreDrive 初始化存储驱动
 func (c *Config) initStoreDrive() (err error) {
 	switch c.Store.Drive {
 	case StoreDriveFile:
 		fallthrough
 	default:
+		confDataDir := c.GetConfDataDir()
+
 		fileSync := util.FileSync{}
-		fileSync.FilePath = c.Store.Path
-		if err = fileSync.InitStoreFile(c.Store.Path, 0755); err != nil {
+		webDataPath := path.Join(confDataDir, c.Store.Path)
+		fileSync.FilePath = webDataPath
+		if err = fileSync.InitStoreFile(webDataPath, 0755); err != nil {
 			return err
 		}
 		c.Store.FileSync = &fileSync
 
 		fileGroupSync := util.FileSync{}
-		fileGroupSync.FilePath = c.GroupStore.Path
-		if err = fileGroupSync.InitStoreFile(c.GroupStore.Path, 0755); err != nil {
+		groupPath := path.Join(confDataDir, c.GroupStore.Path)
+		fileGroupSync.FilePath = groupPath
+		if err = fileGroupSync.InitStoreFile(groupPath, 0755); err != nil {
 			return err
 		}
 		c.GroupStore.FileSync = &fileGroupSync

@@ -1,6 +1,6 @@
 <template>
   <div class="group-card">
-    <el-row :gutter="20">
+    <el-row>
       <el-col class="web-site-col" :xs="8" :sm="6" :md="4" :lg="3" :xl="3"
               v-for="(webInfo, index) in sortMapList" :key="index" :draggable="canDrag"
               @dragstart="dragstart(webInfo)" @dragenter="dragenter(webInfo, $event)"
@@ -140,7 +140,10 @@ export default {
             this.$message.success({
               message: res.message || "保存成功",
               onClose() {
-                _this.emitCloseModel();
+                try {
+                  _this.emitCloseModel();
+                  // eslint-disable-next-line no-empty
+                } catch (e) {}
               },
             });
           }
@@ -166,6 +169,18 @@ export default {
   max-width: 1068px;
   height: 100%;
   z-index: 1;
-  background-color: #FAFAFA;
+  /*background-color: #FAFAFA;*/
+}
+
+.web-site-col {
+  margin: 4px 0 0 0;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+.web-site-col:hover {
+  background: #ebebeb;
+  cursor: pointer;
 }
 </style>

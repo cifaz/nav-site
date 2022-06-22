@@ -69,18 +69,24 @@ func InitEmbedResource(engine *gin.Engine) {
 	} else {
 		engine.GET("/favicon.ico", htmlHandler.Favicon)
 	}
+
+	logoExists, _ := util.FileExists("./conf/logo.png")
+	if logoExists {
+		conf.HasLogo = true
+		engine.StaticFile("/logo.png", "./conf/logo.png")
+	}
 }
 
 func InitLocalResource(engine *gin.Engine) {
 	// 以下代码为读取本地文件, 目前使用embed方式打包, 如果代码量大请使用此种方式
-	engine.LoadHTMLGlob("static/*.html")
-	engine.Static("/static", "./static")
-	engine.Static("/css", "./static/css")
-	engine.Static("/js", "./static/js")
-	engine.StaticFile("/favicon.ico", "favicon.ico")
-	engine.StaticFile("/background.jpg", "./static/background.jpg")
+	//engine.LoadHTMLGlob("static/*.html")
+	//engine.Static("/static", "./static")
+	//engine.Static("/css", "./static/css")
+	//engine.Static("/js", "./static/js")
+	//engine.StaticFile("/favicon.ico", "favicon.ico")
+	//engine.StaticFile("/background.jpg", "./static/background.jpg")
 	//
-	engine.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{})
-	})
+	//engine.GET("/", func(c *gin.Context) {
+	//	c.HTML(http.StatusOK, "index.html", gin.H{})
+	//})
 }

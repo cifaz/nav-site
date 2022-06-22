@@ -1,6 +1,8 @@
 package main
 
-import "nav-site-server/server"
+import (
+	"nav-site-server/server"
+)
 
 func main() {
 	server.Run()
