@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	conf "nav-site-server/config"
 	"nav-site-server/extend/util"
@@ -142,9 +143,11 @@ func WebSiteAdd(c *gin.Context) {
 }
 
 func WebSiteUpdate(c *gin.Context) {
+	log.Info("WebSiteUpdate...")
 	app := conf.App
 	output := conf.JsonOutput{}
 	j := util.JWT{}
+
 	name, err := j.Check(getAuthorization(c), app.Account.Secret)
 	if err != nil {
 		output.Debug = err.Error()

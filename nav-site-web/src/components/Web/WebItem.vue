@@ -183,6 +183,7 @@ export default {
   border-radius: 4px;
   /*height: 100px;*/
   /*width: 100px;*/
+  width: 100%;
   min-height: 10px;
   min-width: 10px;
   cursor: pointer;

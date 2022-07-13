@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	conf "nav-site-server/config"
 	"net/http"
@@ -13,5 +14,7 @@ func response(c *gin.Context, r conf.JsonOutput) {
 }
 
 func getAuthorization(c *gin.Context) string {
-	return strings.ReplaceAll(c.GetHeader("authorization"), "Bearer ", "")
+	header := c.GetHeader("Authorization")
+	fmt.Println("Authorization:", header)
+	return strings.ReplaceAll(header, "Bearer ", "")
 }

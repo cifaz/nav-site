@@ -1,7 +1,9 @@
 package util
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -21,10 +23,15 @@ func (j *JWT) Make(name, secret string, expire time.Duration) (string, error) {
 }
 
 func (j *JWT) Check(token, secret string) (string, error) {
+	//secretBytes, err := base64.URLEncoding.DecodeString(secret)
+	log.Info("token:{}, secret: {}", token, secret)
+	secretBytes := []byte(secret)
 	claim, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
+
+		return secretBytes, nil
 	})
 	if err != nil {
+		fmt.Println("jwt error:", err)
 		return "", err
 	}
 	return claim.Claims.(jwt.MapClaims)["name"].(string), nil
