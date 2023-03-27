@@ -8,7 +8,7 @@
       :content="tipContent"
   >
     <template #reference>
-      <div class="web-item">
+      <div class="web-item web-item-claz">
         <div v-if="webInfo.pic"
              class="web-item-avatar"
              @click="openWeb"
@@ -181,8 +181,6 @@ export default {
   position: relative;
   display: block;
   border-radius: 4px;
-  /*height: 100px;*/
-  /*width: 100px;*/
   width: 100%;
   min-height: 10px;
   min-width: 10px;

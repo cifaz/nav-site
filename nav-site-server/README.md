@@ -78,8 +78,8 @@ CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o nav-site-server.exe main.go
 发布本地版本
 goreleaser release --auto-snapshot --rm-dist
 
-git tag -a v0.0.5 -m 'release v0.0.5'
-git push origin v0.0.5
+git tag -a v0.0.8 -m 'release v0.0.8'
+git push origin v0.0.8
 
 发布到github上
 goreleaser release --rm-dist

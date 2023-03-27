@@ -9,7 +9,7 @@ import (
 func TestUpdateOrder(t *testing.T) {
 	abc := new(WebsitesModel)
 
-	s, _ := conf.InitConfig()
+	s, _ := conf.InitConfig("")
 	conf.App = *s
 	app := conf.App
 	_ = abc.InitOrder(app.Store.FileSync)
@@ -19,7 +19,7 @@ func TestUpdateOrder(t *testing.T) {
 func TestFileOrder(t *testing.T) {
 	webSite := new(WebsitesModel)
 
-	conf, _ := conf.InitConfig()
+	conf, _ := conf.InitConfig("")
 
 	list, _ := webSite.List(conf.Store.FileSync)
 	//fmt.Println(list)
