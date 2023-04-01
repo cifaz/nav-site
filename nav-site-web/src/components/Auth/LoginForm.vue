@@ -37,7 +37,7 @@ import { AuthLogin } from "@/api/auth.js";
 import { CookieSet } from "@/api/cookie.js";
 
 export default {
-  emits: ['showModel'],
+  emits: ['show-model'],
   name: "LoginForm",
   props: {
     modeShow: {
@@ -84,7 +84,7 @@ export default {
       this.emitCloseModel({ show: false });
     },
     emitCloseModel() {
-      this.$emit("showModel", { show: false });
+      this.$emit("show-model", { show: false });
     },
     login() {
       const _this = this;

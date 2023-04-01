@@ -103,7 +103,7 @@ import { WebAdd, WebEdit } from "@/api/website.js";
 import { WebLogoUploadUrl } from "@/api/upload.js";
 
 export default {
-  emits: ['showModel'],
+  emits: ['show-model'],
   name: "WebForm",
   props: {
     modeShow: {
@@ -147,7 +147,7 @@ export default {
         ],
         host: [
           { required: true, message: "站点地址不能为空", trigger: "blur" },
-          { type: "url", message: "不是有效的地址", trigger: "blur" },
+          // { type: "url", message: "不是有效的地址", trigger: "blur" },
         ],
       },
       isEditGroup: false,
@@ -198,13 +198,33 @@ export default {
       this.emitCloseModel({ show: false, webItem: this.formData });
     },
     emitCloseModel() {
-      this.$emit("showModel", { show: false, webItem: this.formData });
+      this.$emit("show-model", { show: false, webItem: this.formData });
       window.location.reload();
     },
     saveWeb() {
       const _this = this;
       const saveWeb = this.formData.id ? WebEdit : WebAdd;
-      saveWeb(this.formData)
+      const saveData = {};
+      saveData.id = this.formData.id;
+      saveData.group = this.formData.group;
+      saveData.pic = this.formData.pic;
+      saveData.name = this.formData.name;
+      saveData.host = this.formData.host;
+      saveData.desc = this.formData.desc;
+
+      // 变更为统一的http头//
+      let newHost = saveData.host;
+      if (newHost.startsWith("https://")) {
+        newHost = newHost.substring("https://", "//");
+      } else if (newHost.startsWith("http://")) {
+        newHost = newHost.substring("http://", "//");
+      } else {
+      //   没有开头时, 补充
+        newHost = "//" + newHost;
+      }
+      saveData.host = newHost;
+
+      saveWeb(saveData)
         .then((res) => {
           res = res.data;
           if (res.code) {

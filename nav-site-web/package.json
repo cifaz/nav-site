@@ -1,9 +1,9 @@
 {
   "name": "nav-site-web",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "scripts": {
-    "dev": "vue-cli-service serve",
+    "dev": "set NODE_OPTIONS=--openssl-legacy-provider & vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },

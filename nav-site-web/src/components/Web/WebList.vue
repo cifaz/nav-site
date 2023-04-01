@@ -15,7 +15,7 @@
           @click="addWeb"
       >
         <el-icon>
-          <SetUp/>
+          <Plus/>
         </el-icon>
       </el-button>
       <el-button
@@ -123,9 +123,9 @@ export default {
     init() {
       this.token = CookieGetToken();
       this.isCanEdit();
+      this.getWebGroups();
       this.setLoginIcon();
       this.getWebList();
-      this.getWebGroups();
     },
     getWebList() {
       let that = this;

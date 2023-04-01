@@ -1,10 +1,16 @@
 # nav-site-web
 
+## 运行环境
+```
+node版本:  
+vue版本: 
+```
+
 ## 构建前端：（vue3+element）
 ```
 调试模式
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 默认端口为8080
 
 集成到go语言调试
@@ -15,22 +21,22 @@ npm run dev
 
 ## Project setup
 ```
-npm install
+pnpm install
 ```
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+pnpm dev
 ```
 
 ### Compiles and minifies for production
 ```
-npm run build
+pnpm run build
 ```
 
 ### Lints and fixes files
 ```
-npm run lint
+pnpm run lint
 ```
 
 ### Customize configuration

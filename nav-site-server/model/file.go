@@ -48,7 +48,7 @@ func (w *WebsitesModel) List(fileSync *util.FileSync) ([]WebsitesStoreItem, erro
 	return list, nil
 }
 
-// List 获取站点列表
+// List 获取所有分组信息
 func (w *WebsitesModel) ListGroupOrder(fileSync *util.FileSync) ([]string, error) {
 	content, err := fileSync.ReadJSON()
 	if err != nil {
@@ -79,7 +79,7 @@ func (w *WebsitesModel) Add(fileSync *util.FileSync, data WebsitesStoreItem, bac
 	if data.Group == "" {
 		data.Group = WebsitesGroupDefault
 	}
-	data.ID = util.CreateMD5(data.Host, true)
+	data.ID = util.CreateMD5(data.Group+data.Host, true)
 	for _, item := range list {
 		if item.ID == data.ID {
 			return 0, nil
@@ -202,7 +202,7 @@ func (w *WebsitesModel) Groups(fileSync *util.FileSync) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	groups := make([]string, 0)
+	allGroups := make([]string, 0)
 	mapGroups := make(map[string]string)
 	for _, item := range list {
 		if item.Group == "" {
@@ -212,31 +212,31 @@ func (w *WebsitesModel) Groups(fileSync *util.FileSync) ([]string, error) {
 			continue
 		}
 		mapGroups[item.Group] = item.Group
-		groups = append(groups, item.Group)
+		allGroups = append(allGroups, item.Group)
 	}
 
 	app := conf.App
-	groupOrder, _ := w.ListGroupOrder(app.GroupStore.FileSync)
-	newGroups := groupOrder
-	if len(groupOrder) == len(groups) {
-		newGroups = groupOrder
+	currGroupsInGroupFile, _ := w.ListGroupOrder(app.GroupStore.FileSync)
+	newGroups := currGroupsInGroupFile
+	if len(currGroupsInGroupFile) == len(allGroups) {
+		newGroups = currGroupsInGroupFile
 	} else {
 		isAppendNew := false
 
-		if groupOrder == nil {
-			newGroups = groups
+		if currGroupsInGroupFile == nil {
+			newGroups = allGroups
 			isAppendNew = true
 		} else {
-			for _, groupName := range groupOrder {
+			for _, groupName := range allGroups {
 				isContains := false
-				for _, groupName2 := range groups {
+				for _, groupName2 := range currGroupsInGroupFile {
 					if groupName == groupName2 {
 						isContains = true
 					}
 				}
 
 				if !isContains {
-					_ = append(newGroups, groupName)
+					newGroups = append(newGroups, groupName)
 					isAppendNew = true
 				}
 			}
@@ -319,13 +319,21 @@ func (w *WebsitesModel) GetLastOrderInGroup(groupKey string, webSiteList []Websi
 		listMap := w.OrderWebSiteByOrder(webSiteList)
 
 		var newGroupKey = groupKey
+		newGroupKeyExistsCount := 0
 		for key, _ := range listMap {
 			if strings.HasSuffix(key, groupKey) {
 				newGroupKey = key
+				newGroupKeyExistsCount++
 			}
 		}
 
-		order = listMap[newGroupKey][len(listMap[newGroupKey])-1].Order
+		println(listMap)
+		if newGroupKeyExistsCount > 0 {
+			order = listMap[newGroupKey][len(listMap[newGroupKey])-1].Order
+		} else {
+			order = len(listMap)
+		}
+
 	}
 
 	return order

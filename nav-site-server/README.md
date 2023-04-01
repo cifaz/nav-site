@@ -1,5 +1,5 @@
 ## 后端调试
-- 安装golang >= 1.16
+- 安装golang >= 1.18
 - 配置go mod, 安装依赖 go mod tidy
 
 ### 前端调试
@@ -78,10 +78,14 @@ CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o nav-site-server.exe main.go
 发布本地版本
 goreleaser release --auto-snapshot --rm-dist
 
-git tag -a v0.0.8 -m 'release v0.0.8'
-git push origin v0.0.8
+git tag -a v0.0.9 -m 'release v0.0.9'
+git push origin v0.0.9
 
 发布到github上
 goreleaser release --rm-dist
 ```
 
+### 调试失效
+```bash
+go get -u github.com/go-delve/delve/cmd/dlv@latest
+```
