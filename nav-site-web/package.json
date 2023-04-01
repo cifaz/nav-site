@@ -1,11 +1,11 @@
 {
   "name": "nav-site-web",
-  "version": "0.0.4",
+  "version": "0.0.12",
   "private": true,
   "scripts": {
     "dev": "set NODE_OPTIONS=--openssl-legacy-provider & vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider & vue-cli-service build",
+    "lint": "set NODE_OPTIONS=--openssl-legacy-provider & vue-cli-service lint"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.4",
