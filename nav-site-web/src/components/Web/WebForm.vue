@@ -147,7 +147,7 @@ export default {
         ],
         host: [
           { required: true, message: "站点地址不能为空", trigger: "blur" },
-          // { type: "url", message: "不是有效的地址", trigger: "blur" },
+          { type: "url", message: "不是有效的地址", trigger: "blur" },
         ],
       },
       isEditGroup: false,
