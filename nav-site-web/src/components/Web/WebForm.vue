@@ -213,6 +213,7 @@ export default {
       saveData.desc = this.formData.desc;
 
       // 变更为统一的http头//
+      /* 1. [BUG] 恢复http限制, 后期再完善
       let newHost = saveData.host;
       if (newHost.startsWith("https://")) {
         newHost = newHost.substring("https://", "//");
@@ -223,6 +224,7 @@ export default {
         newHost = "//" + newHost;
       }
       saveData.host = newHost;
+      */
 
       saveWeb(saveData)
         .then((res) => {
