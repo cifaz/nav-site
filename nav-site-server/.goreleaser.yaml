@@ -1,5 +1,5 @@
 # Make sure to check the documentation at https://goreleaser.com
-project_name: nav-site-server
+project_name: nav-site
 before:
   hooks:
     - script\install-npm.bat

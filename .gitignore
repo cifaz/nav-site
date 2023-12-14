@@ -7,3 +7,5 @@ release/
 **/dist/
 test
 *-lock.*
+
+dist/
