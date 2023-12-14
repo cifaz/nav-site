@@ -274,10 +274,11 @@ func WebSiteDelete(c *gin.Context) {
 }
 
 func WebsiteGroups(c *gin.Context) {
-	app := conf.App
+	//app := conf.App
 	output := conf.JsonOutput{}
 	fileModel := model.WebsitesModel{}
-	list, err := fileModel.Groups(app.Store.FileSync)
+	//list, err := fileModel.Groups(app.Store.FileSync)
+	list, err := fileModel.GetGroupsOnly()
 	if err != nil {
 		output.Debug = err.Error()
 		output.Code = conf.WebsiteListDeleteError

@@ -17,7 +17,7 @@ import (
 //go:embed config.yaml
 var DefaultConfigFile []byte
 
-//go:embed nav-site-server-centos7-8.service
+//go:embed nav-site.service
 var NavSiteServerSystemCtl []byte
 
 var HasLogo bool = false
@@ -120,7 +120,10 @@ func InitConfig(confDir string) (*Config, error) {
 
 	confFileFull := path.Join(confDataDir, "conf/config.yaml")
 
-	createConfAuto(confFileFull)
+	err := createConfAuto(confFileFull)
+	if err != nil {
+		return nil, err
+	}
 	config, err := util.ParseYaml(confFileFull)
 	if err != nil {
 		errMsg := errors.New("parse config.yaml file error : " + err.Error())
@@ -162,7 +165,7 @@ func createConfAuto(confFile string) error {
 
 	}
 	// 写出linux-centos8-9配置
-	linuxServerConf := "conf/nav-site-server-centos7-8.service"
+	linuxServerConf := "conf/nav-site.service"
 	linuxServerFile, _ := os.OpenFile(linuxServerConf, os.O_WRONLY|os.O_CREATE, 0644)
 	defer linuxServerFile.Close()
 

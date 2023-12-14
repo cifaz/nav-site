@@ -10,8 +10,9 @@
 ## 介绍
 使用与公司内部或个人的简易版网址导航工具
 
-## 示例站点：https://nav.jianean.com/
-[demo](https://nav.jianean.com/)
+## 示例站点
+[demo](http://nav.cifaz.com:8083/)
+
 #### 操作账号
 - 其它帐号请参见配置文件
 - 用户名：add
@@ -29,22 +30,43 @@ go version
 - windows安装, 下载到你指定的目录解压后, 双击exe文件运行即可, 默认端口号:8083, 请使用http://ip:8083访问, 如需指定配置目录,请使用命令行运行, 具体参见linux参数
 - linux安装, 下载到指定目录后, 
 ```
-修改程序运行权限 chmod u+x nav-site-server
-运行程序 ./nav-site-server
-指定配置目录运行 ./nav-site-server conf-dir=/opt/nav-site/
-后台运行(全路径演示) nohup /opt/nav-site/nav-site-server > /opt/nav-site/nav-site-server.out 2>&1 &
+# 1. 安装golang环境包, 如有请跳过
+yum -y install golang wget
+# 2. 下载运行包
+cd /opt/ && wget https://github.com/cifaz/nav-site/releases/download/v0.0.15/nav-site-server_0.0.15_Linux_x86_64.tar.gz
+
+# 3. 解压安装包
+tar xzvf  nav-site-server_0.0.15_Linux_x86_64.tar.gz --strip-components 1
+mv nav-site-server_0.0.15_Linux_x86_64 nav-site
+
+# 4. 赋执行权限
+chmod u+x /opt/nav-site/nav-site-server
+
+# 5. 运行程序
+普通运行
+/opt/nav-site/nav-site-server
+
+指定配置目录运行 
+/opt/nav-site/nav-site-server conf-dir=/opt/nav-site/
+
+后台运行
+nohup /opt/nav-site/nav-site-server > /opt/nav-site/nav-site-server.out 2>&1 &
+
+# 6. 登录创建数据即可
+默认用户密码: admin 123456
 ```
 - linux服务化 systemctl
 ```
 示例脚本仅适用于centos7/8, 其它系统请参考
-复制conf目录下的nav-site-server-centos7-8.service至并命名为/etc/systemd/system/nav-site-server.service
+# 复制conf目录下的nav-site-server-centos7-8.service至并命名为/etc/systemd/system/nav-site.service
+cp /opt/nav-site/conf/nav-site.service /etc/systemd/system/nav-site.service
 
 # 重新载入配置
 systemctl daemon-reload 
 # 启动程序
-systemctl start nav-site-server
+systemctl start nav-site
 # 查看启动状态
-systemctl status nav-site-server.service 
+systemctl status nav-site.service 
 # 查看端口是否被监听
 netstat -ntlp | grep :8083
 

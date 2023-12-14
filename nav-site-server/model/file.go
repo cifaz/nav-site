@@ -89,6 +89,9 @@ func (w *WebsitesModel) Add(fileSync *util.FileSync, data WebsitesStoreItem, bac
 		}
 	}
 
+	// 如果有新组则增加组
+	w.AddGroups(data.Group)
+
 	// 获取当前组有多少个, 并返回合适的order
 	lastOrder := w.GetLastOrderInGroup(data.Group, list) + 1
 	data.Order = lastOrder
@@ -101,9 +104,29 @@ func (w *WebsitesModel) Add(fileSync *util.FileSync, data WebsitesStoreItem, bac
 	return 1, nil
 }
 
-// Add 添加站点
+// AddGroups 添加站点
+func (w *WebsitesModel) AddGroups(group string) {
+	groups, _ := w.GetGroupsOnly()
+
+	isExist := false
+	for _, group1 := range groups {
+		if group1 == group {
+			isExist = true
+		}
+	}
+	if !isExist {
+		groups = append(groups, group)
+
+		_, err := w.AddGroupOrder(conf.App.GroupStore.FileSync, groups, "")
+		if err != nil {
+			return
+		}
+	}
+}
+
+// AddGroupOrder Add 添加站点分组
 func (w *WebsitesModel) AddGroupOrder(groupSync *util.FileSync, data []string, backupsDir string) (int, error) {
-	if err := w.saveString(data, groupSync); err != nil {
+	if err := w.saveGroupsString(data, groupSync); err != nil {
 		return 0, err
 	}
 	return 1, nil
@@ -128,9 +151,12 @@ func (w *WebsitesModel) Update(fileSync *util.FileSync, data WebsitesStoreItem, 
 			list[index] = data
 		}
 	}
+
 	if err := w.save(list, fileSync); err != nil {
 		return 0, err
 	}
+
+	w.AddGroups(data.Group)
 	return 1, nil
 }
 
@@ -178,32 +204,91 @@ func (w *WebsitesModel) Delete(fileSync *util.FileSync, ids []string, backupsDir
 	if err != nil {
 		return 0, err
 	}
-	// 遍历删除
+	// 新的站点列表
 	newList := make([]WebsitesStoreItem, 0)
 	success := 0
+	var site = WebsitesStoreItem{}
 	for _, item := range list {
 		if util.StringInArray(item.ID, ids) == false {
 			newList = append(newList, item)
 		} else {
 			success++
+			site = item
 		}
 	}
+
+	// 检查分组是否还有数据, 没有则删除分组
+	_ = w.DeleteGroupsOne(site.Group)
+
 	if err := w.save(newList, fileSync); err != nil {
 		return 0, err
 	}
 	return success, nil
 }
 
+func (w *WebsitesModel) DeleteGroupsOne(group string) error {
+	// 从站点中获取所有站点数据
+	list := make([]WebsitesStoreItem, 0)
+	list, err := w.List(conf.App.Store.FileSync)
+	if err != nil {
+		return err
+	}
+
+	// 从站点列表中区分唯一的分组数据
+	listMap := w.OrderWebSiteByOrder(list)
+
+	// 判断是否存在数据, 存在1条即可, 因为现在删除的就是最后一条
+	newGroupKeyExistsCount := 0
+	for key, data := range listMap {
+		if strings.HasSuffix(key, group) && len(data) == 1 {
+			newGroupKeyExistsCount++
+		}
+	}
+
+	if newGroupKeyExistsCount == 1 {
+		// 获取本地分组数据
+		currGroupsInGroupFile, _ := w.GetGroupsOnly()
+		newGroups := currGroupsInGroupFile
+
+		// 从站点分组中删除某个组;
+		tmpGroups := make([]string, 0)
+		for _, groupName1 := range newGroups {
+			if groupName1 != group {
+				tmpGroups = append(tmpGroups, groupName1)
+			}
+		}
+
+		newGroups = tmpGroups
+
+		_, err = w.AddGroupOrder(conf.App.GroupStore.FileSync, newGroups, "")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// GetGroupsOnly 获取分组数据, 从文件中
+func (w *WebsitesModel) GetGroupsOnly() ([]string, error) {
+	app := conf.App
+	currGroupsInGroupFile, err := w.ListGroupOrder(app.GroupStore.FileSync)
+	return currGroupsInGroupFile, err
+}
+
 // Groups 获取站点分组列表
+// Deprecate
 func (w *WebsitesModel) Groups(fileSync *util.FileSync) ([]string, error) {
-	// 读取
+	// 从站点中获取所有站点数据
 	list := make([]WebsitesStoreItem, 0)
 	list, err := w.List(fileSync)
 	if err != nil {
 		return nil, err
 	}
+
 	allGroups := make([]string, 0)
 	mapGroups := make(map[string]string)
+	// 从站点数据中获取所有分组数据
 	for _, item := range list {
 		if item.Group == "" {
 			continue
@@ -219,8 +304,10 @@ func (w *WebsitesModel) Groups(fileSync *util.FileSync) ([]string, error) {
 	currGroupsInGroupFile, _ := w.ListGroupOrder(app.GroupStore.FileSync)
 	newGroups := currGroupsInGroupFile
 	if len(currGroupsInGroupFile) == len(allGroups) {
-		newGroups = currGroupsInGroupFile
+		newGroups = allGroups
 	} else {
+		// 分组有自定义排序, 需要比对写入
+		// 移除不再判断, 直接写入
 		isAppendNew := false
 
 		if currGroupsInGroupFile == nil {
@@ -240,10 +327,45 @@ func (w *WebsitesModel) Groups(fileSync *util.FileSync) ([]string, error) {
 					isAppendNew = true
 				}
 			}
+
+			// 判断是否有空组存在
+			delArr := make([]string, 0)
+			for _, groupName1 := range currGroupsInGroupFile {
+				isNotEmpty := false
+				for _, groupName2 := range allGroups {
+					if groupName1 == groupName2 {
+						isNotEmpty = true
+					}
+				}
+
+				if !isNotEmpty {
+					delArr = append(delArr, groupName1)
+				}
+			}
+
+			// 从新组装的分组中删除空组;
+			tmpGroups := make([]string, 0)
+			for _, groupName1 := range newGroups {
+				isTrue := false
+				for _, groupName2 := range delArr {
+					if groupName1 == groupName2 {
+						isTrue = true
+					}
+				}
+
+				if !isTrue {
+					tmpGroups = append(tmpGroups, groupName1)
+				}
+			}
+
+			newGroups = tmpGroups
 		}
 
 		if isAppendNew {
-			w.AddGroupOrder(app.GroupStore.FileSync, newGroups, "")
+			_, err := w.AddGroupOrder(app.GroupStore.FileSync, newGroups, "")
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
@@ -264,7 +386,7 @@ func (w *WebsitesModel) save(list []WebsitesStoreItem, fileSync *util.FileSync) 
 	return nil
 }
 
-func (w *WebsitesModel) saveString(data []string, groupSync *util.FileSync) error {
+func (w *WebsitesModel) saveGroupsString(data []string, groupSync *util.FileSync) error {
 	if len(data) == 0 {
 		return nil
 	}
@@ -312,7 +434,7 @@ func (w *WebsitesModel) InitOrder(fileSync *util.FileSync) error {
 	return nil
 }
 
-// 获取当前组有多少个, 并返回合适的order
+// GetLastOrderInGroup 获取当前组有多少个, 并返回合适的order
 func (w *WebsitesModel) GetLastOrderInGroup(groupKey string, webSiteList []WebsitesStoreItem) int {
 	order := 1
 	if len(webSiteList) > 0 {
@@ -329,7 +451,13 @@ func (w *WebsitesModel) GetLastOrderInGroup(groupKey string, webSiteList []Websi
 
 		println(listMap)
 		if newGroupKeyExistsCount > 0 {
-			order = listMap[newGroupKey][len(listMap[newGroupKey])-1].Order
+			if len(listMap[newGroupKey]) > 0 {
+				order = listMap[newGroupKey][len(listMap[newGroupKey])-1].Order
+			} else {
+				split2 := strings.Split(newGroupKey, "-")
+				order, _ = strconv.Atoi(split2[0])
+			}
+
 		} else {
 			order = len(listMap)
 		}

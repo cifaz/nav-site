@@ -78,7 +78,7 @@ func UintInArray(id uint, arr []uint) bool {
 	return false
 }
 
-// StringInArray 数组中是否存在该该值
+// StringInArray 数组中是否存在该该值, 存在TRUE, 不存在FALSE
 func StringInArray(id string, arr []string) bool {
 	for _, val := range arr {
 		if id == val {
