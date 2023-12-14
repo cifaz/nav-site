@@ -33,24 +33,24 @@ go version
 # 1. 安装golang环境包, 如有请跳过
 yum -y install golang wget
 # 2. 下载运行包
-cd /opt/ && wget https://github.com/cifaz/nav-site/releases/download/v0.0.18/nav-site-server_0.0.15_Linux_x86_64.tar.gz
+cd /opt/ && wget https://github.com/cifaz/nav-site/releases/download/v0.0.18/nav-site_0.0.18_Linux_x86_64.tar.gz
 
 # 3. 解压安装包
-tar xzvf  nav-site-server_0.0.18_Linux_x86_64.tar.gz --strip-components 1
-mv nav-site-server_0.0.18_Linux_x86_64 nav-site
+tar xzvf nav-site_0.0.18_Linux_x86_64.tar.gz --strip-components 1 -C nav-site
+mv nav-site_0.0.18_Linux_x86_64 nav-site
 
 # 4. 赋执行权限
-chmod u+x /opt/nav-site/nav-site-server
+chmod u+x /opt/nav-site/nav-site
 
 # 5. 运行程序
 普通运行
-/opt/nav-site/nav-site-server
+/opt/nav-site/nav-site
 
 指定配置目录运行 
-/opt/nav-site/nav-site-server conf-dir=/opt/nav-site/
+/opt/nav-site/nav-site conf-dir=/opt/nav-site/
 
 后台运行
-nohup /opt/nav-site/nav-site-server > /opt/nav-site/nav-site-server.out 2>&1 &
+nohup /opt/nav-site/nav-site > /opt/nav-site/nav-site.out 2>&1 &
 
 # 6. 登录创建数据即可
 默认用户密码: admin 123456
