@@ -33,11 +33,11 @@ go version
 # 1. 安装golang环境包, 如有请跳过
 yum -y install golang wget
 # 2. 下载运行包
-cd /opt/ && wget https://github.com/cifaz/nav-site/releases/download/v0.0.15/nav-site-server_0.0.15_Linux_x86_64.tar.gz
+cd /opt/ && wget https://github.com/cifaz/nav-site/releases/download/v0.0.18/nav-site-server_0.0.15_Linux_x86_64.tar.gz
 
 # 3. 解压安装包
-tar xzvf  nav-site-server_0.0.15_Linux_x86_64.tar.gz --strip-components 1
-mv nav-site-server_0.0.15_Linux_x86_64 nav-site
+tar xzvf  nav-site-server_0.0.18_Linux_x86_64.tar.gz --strip-components 1
+mv nav-site-server_0.0.18_Linux_x86_64 nav-site
 
 # 4. 赋执行权限
 chmod u+x /opt/nav-site/nav-site-server
